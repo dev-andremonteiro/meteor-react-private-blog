@@ -1,14 +1,15 @@
 <p align="center" >
-    <img src="https://user-images.githubusercontent.com/19479358/55590145-1080be00-5700-11e9-83bf-83dde23765dc.png" width="700"/>
+    <img src="https://user-images.githubusercontent.com/19479358/55590145-1080be00-5700-1.png" width="700"/>
 </p>
 <p align="center">
 <a title='License' href="https://github.com/FaridSafi/react-native-gifted-chat/blob/master/LICENSE" height="18">
     <img src='https://img.shields.io/badge/license-MIT-blue.svg' />
 </a>
 </p>
+
 # Your Private Blog
 
-built with [Meteor](https://github.com/facebook/react-native) and [React](https://github.com/expo/expo).
+built with [Meteor](https://github.com/meteor/meteor) and [React](https://github.com/facebook/react).
 
 ## Brief description
 
@@ -17,12 +18,16 @@ This is a small blog page application. This app is a private blog page which mea
 ## Requirements
 
 - [ ] Make a beautiful home page.
-- [ ] Integrate _/login_ route on to the home page.
+- [ ] Integrate _/login_ route into the home page.
 - [ ] User should be able to register and login to the app trought the respective routes _/signup_ and _/login_.
 - [ ] Users not logged in CAN NOT see blog posts.
+- [ ] All Blog posts are shown in the _/blog_ route.
 - [ ] Blog posts should have a Title and a Description field.
-- [ ] ADMIN user should be able to create blog posts using the _/blog_ route.
-- [ ]
+- [ ] ADMIN user should be able to create, update and delete blog posts using the _/blog_ route.
+- [ ] Regular users should not see ADMIN action buttons.
+- [ ] A single page with the _/blog/{id}_ should be opened after clicking on a blog post in _/blog_.
+- [ ] ADMIN user should be able to manage current users from the _/admin/users_ route.
+- [ ] Regular users should not be able to see _/admin/users_ route content (show permission denied).
 
 ## Design
 
@@ -30,15 +35,11 @@ By [me](https://github.com/dev-andremonteiro). :bowtie:
 
 ## Installation
 
-- Clone this repo `git clone https://github.com/dev-andremonteiro/react-native-frontend-adventure.git`
-- `cd react-native-frontend-adventure`
-- `cd luxuryShop`
-- run `npm install`
-- run `expo start`
-
-## Related SO Question
-
-[Building First Screen Image Card](https://stackoverflow.com/questions/55351050/building-image-card-in-react-native/55352500#55352500)
+- Make sure you have meteor [installed](https://www.meteor.com/install).
+- Clone this repo `git clone https://github.com/dev-andremonteiro/meteor-react-private-blog.git`
+- `cd meteor-react-private-blog`
+- `meteor npm install`
+- run `meteor` or `meteor run`
 
 ## Developer
 
