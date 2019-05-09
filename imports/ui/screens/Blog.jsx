@@ -1,10 +1,8 @@
 import React from "react";
 
-export default class Blogs extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {};
+export default class Blog extends React.Component {
+  componentDidMount() {
+    document.title = "Blog Posts - PrivateBlog";
   }
 
   render() {
