@@ -15,7 +15,7 @@ const styles = theme => ({
     height: "10vh"
   },
   toolbarMain: {
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.common.white
   },
   toolbarTitle: {
     padding: 20

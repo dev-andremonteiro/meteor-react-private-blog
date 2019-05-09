@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
@@ -17,7 +16,7 @@ const styles = theme => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: theme.palette.grey[200]
+    backgroundColor: theme.palette.grey[400]
   },
 
   wraper: {
@@ -28,8 +27,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.grey[50],
     padding: `${theme.spacing.unit * 6}px`,
     borderRadius: theme.spacing.unit,
-    width: "450px",
-    boxShadow: "0 13px 40px -13px rgba(0, 0, 0, 0.75)"
+    width: "450px"
   },
 
   formControl: {

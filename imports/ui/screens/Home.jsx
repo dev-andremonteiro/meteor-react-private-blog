@@ -11,7 +11,7 @@ const styles = theme => ({
     flexDirection: "column",
     justifyContent: "flex-end",
     padding: `${theme.spacing.unit * 6}px`,
-    backgroundColor: theme.palette.grey[200],
+    backgroundColor: theme.palette.grey[400],
     backgroundImage: "url(background.jpg)",
     backgroundPosition: "center",
     backgroundSize: "cover",
