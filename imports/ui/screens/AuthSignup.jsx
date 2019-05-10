@@ -139,6 +139,7 @@ class AuthSignup extends React.Component {
                 margin="normal"
                 variant="outlined"
                 type="password"
+                onKeyPress={ev => ev.key === "Enter" && this.handleSignup()}
               />
             </form>
 

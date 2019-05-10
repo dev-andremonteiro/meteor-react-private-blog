@@ -14,7 +14,7 @@ import Avatar from "@material-ui/core/Avatar";
 
 import grey from "@material-ui/core/colors/grey";
 
-import { Redirect } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 
 const styles = theme => ({
   card: {
@@ -30,20 +30,8 @@ const styles = theme => ({
 });
 
 class PostCard extends React.Component {
-  state = {
-    redirect: false
-  };
-
-  handleOnClick = () => {
-    this.setState({ redirect: true });
-  };
-
   render() {
-    const { classes } = this.props;
-
-    if (this.state.redirect) {
-      return <Redirect push to="/blog/asd123" />;
-    }
+    const { classes, history } = this.props;
 
     return (
       <Card className={classes.card}>
@@ -52,7 +40,7 @@ class PostCard extends React.Component {
           title="Shrimp and Chorizo Paella"
           subheader="September 14, 2016"
         />
-        <CardActionArea onClick={() => this.setState({ redirect: true })}>
+        <CardActionArea onClick={() => history.push("/blog/asd123")}>
           <CardMedia
             className={classes.media}
             image="paella.jpg"
@@ -75,4 +63,4 @@ PostCard.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(PostCard);
+export default withStyles(styles)(withRouter(PostCard));

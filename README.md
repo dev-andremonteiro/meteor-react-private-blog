@@ -28,7 +28,7 @@ This is a small blog page application. This app is a private blog page which mea
 - [ ] ADMIN user should be able to create, update and delete blog posts using the _/blog_ route.
 - [ ] Guest users should not see ADMIN action buttons.
 - [ ] A single page with the _/blog/{id}_ should be opened after clicking on a blog post in _/blog_.
-- [ ] ADMIN user should be able to manage current users from the _/admin/users_ route.
+- [ ] ADMIN user should be able to see current users from the _/admin/users_ route.
 - [x] Guest users should not be able to see _/admin/users_ route content.
 
 ## Design

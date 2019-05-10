@@ -79,6 +79,7 @@ class AuthLogin extends React.Component {
       } else {
         if (Meteor.user().profile)
           Session.set("admin", Meteor.user().profile.admin);
+
         this.setState({ error: "", password: "", changePage: true });
       }
     });
@@ -119,6 +120,7 @@ class AuthLogin extends React.Component {
                 margin="normal"
                 variant="outlined"
                 type="password"
+                onKeyPress={ev => ev.key === "Enter" && this.handleLogin()}
               />
               <Typography style={{ alignSelf: "flex-start" }}>
                 <Link

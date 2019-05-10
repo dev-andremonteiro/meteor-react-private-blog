@@ -7,6 +7,7 @@ import PostCard from "../components/PostCard";
 
 import { Link } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
 
 const styles = theme => ({
   themain: {

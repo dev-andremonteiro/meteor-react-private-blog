@@ -9,8 +9,9 @@ import { withStyles } from "@material-ui/core/styles";
 
 import { Meteor } from "meteor/meteor";
 
-import { Link, Redirect } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { Session } from "meteor/session";
+import { withTracker } from "meteor/react-meteor-data";
 
 const styles = theme => ({
   appBar: {
@@ -26,17 +27,17 @@ const styles = theme => ({
 });
 
 class NavAuthBar extends React.Component {
-  state = {
-    changePage: false
+  flowControl = false;
+
+  handleLogout = history => {
+    Session.set("admin", null);
+    Meteor.logout(() => {
+      history.push("/");
+    });
   };
 
   render() {
-    const { classes } = this.props;
-
-    if (this.state.changePage) {
-      this.setState({ changePage: false });
-      return <Redirect push to="/" />;
-    }
+    const { classes, history, currentUser } = this.props;
 
     return (
       <AppBar position="static" className={classes.appBar}>
@@ -60,24 +61,31 @@ class NavAuthBar extends React.Component {
               </Link>
             </Typography>
           </div>
-          <Link to="/login">
-            <Button variant="outlined" size="small">
-              Login
-            </Button>
-          </Link>
 
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => {
-              Session.set("admin", false);
-              Meteor.logout(() => {
-                this.setState({ changePage: true });
-              });
-            }}
-          >
-            Logout
-          </Button>
+          {this.props.loggedIn ? (
+            <div style={{ display: "flex" }}>
+              <Typography
+                variant="h6"
+                color="primary"
+                style={{ padding: "0px 20px" }}
+              >
+                {currentUser ? `${currentUser.username}` : ""}
+              </Typography>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={this.handleLogout.bind(this, history)}
+              >
+                Logout
+              </Button>
+            </div>
+          ) : (
+            <Link to="/login">
+              <Button variant="outlined" size="small">
+                Login
+              </Button>
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
     );
@@ -88,4 +96,11 @@ NavAuthBar.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(NavAuthBar);
+export default withStyles(styles)(
+  withTracker(props => {
+    return {
+      loggedIn: !!Meteor.userId(),
+      currentUser: Meteor.user()
+    };
+  })(withRouter(NavAuthBar))
+);

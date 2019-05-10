@@ -3,9 +3,6 @@ import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
-import { Meteor } from "meteor/meteor";
-import { Redirect } from "react-router-dom";
-
 const styles = theme => ({
   content: {
     position: "relative",
