@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
+import { Redirect } from "react-router-dom";
+
 const styles = theme => ({
   content: {
     position: "relative",
@@ -12,7 +14,7 @@ const styles = theme => ({
     justifyContent: "flex-end",
     padding: `${theme.spacing.unit * 6}px`,
     backgroundColor: theme.palette.grey[400],
-    backgroundImage: "url(background.jpg)",
+    backgroundImage: "url(/background.jpg)",
     backgroundPosition: "center",
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
@@ -27,12 +29,28 @@ const shadow = {
 };
 
 class Home extends React.Component {
+  state = {
+    redirect: false
+  };
+
+  componentWillMount() {
+    let loggedIn = false;
+
+    if (loggedIn) {
+      this.setState({ redirect: true });
+    }
+  }
+
   componentDidMount() {
     document.title = "Home - PrivateBlog";
   }
 
   render() {
     const { classes } = this.props;
+
+    if (this.state.redirect) {
+      return <Redirect push to="/blog" />;
+    }
 
     return (
       <main style={{ height: "78vh" }}>
@@ -47,8 +65,8 @@ class Home extends React.Component {
             Exclusive content
           </Typography>
           <Typography style={shadow} variant="h5" color="inherit" paragraph>
-            Curated posts of the best influencers and fortune 100&#39;s. Made
-            for you, this is the platform to connect with the bests of the
+            Curated posts of the best influencers and fortune 100&#39;s. This is
+            the platform that connects you with the best personalities of the
             world.
           </Typography>
           <div

@@ -20,7 +20,7 @@ This is a small blog page application. This app is a private blog page which mea
 - [x] Setup routes of the website.
 - [x] Make a beautiful home page.
 - [x] Integrate _/login_ route into the home page.
-- [ ] Finish all screens designs.
+- [x] Finish all screens designs.
 - [ ] User should be able to register and login to the app trought the respective routes _/signup_ and _/login_.
 - [ ] Users not logged in CAN NOT see blog posts.
 - [ ] All Blog posts are shown in the _/blog_ route.
