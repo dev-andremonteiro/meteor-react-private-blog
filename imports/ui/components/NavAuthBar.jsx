@@ -10,7 +10,6 @@ import { withStyles } from "@material-ui/core/styles";
 import { Meteor } from "meteor/meteor";
 
 import { Link, withRouter } from "react-router-dom";
-import { Session } from "meteor/session";
 import { withTracker } from "meteor/react-meteor-data";
 
 const styles = theme => ({
@@ -30,7 +29,6 @@ class NavAuthBar extends React.Component {
   flowControl = false;
 
   handleLogout = history => {
-    Session.set("admin", null);
     Meteor.logout(() => {
       history.push("/");
     });

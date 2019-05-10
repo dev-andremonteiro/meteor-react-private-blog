@@ -13,41 +13,35 @@ import NavAuthBar from "../ui/components/NavAuthBar";
 import Footer from "../ui/components/Footer";
 
 import { Meteor } from "meteor/meteor";
-import { Session } from "meteor/session";
+import { withTracker } from "meteor/react-meteor-data";
 
-export const routes = (
-  <BrowserRouter>
-    <NavAuthBar />
-    <Switch>
-      <SimpleRoute exact path="/" component={Home} />
-      <SimpleRoute exact path="/login" component={AuthLogin} />
-      <SimpleRoute exact path="/signup" component={AuthSignup} />
-      <PrivateRoute exact path="/blog" component={Blog} />
-      <PrivateRoute path="/blog/:_id" component={BlogPost} />
-      <ElevatedRoute exact path="/admin/users" component={Users} />
-      <Route component={NotFoundPage} />
-    </Switch>
+const ElevatedRouteTracking = withTracker(props => {
+  return {
+    currentUser: Meteor.user()
+  };
+})(ElevatedRoute);
 
-    <Footer />
-  </BrowserRouter>
-);
-
-function SimpleRoute({ component: Component, ...rest }) {
+function ElevatedRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
-      render={props =>
-        !!Meteor.userId() ? (
-          <Redirect
-            to={{
-              pathname: "/blog",
-              state: { from: props.location }
-            }}
-          />
-        ) : (
-          <Component {...props} />
-        )
-      }
+      render={props => {
+        if (rest.currentUser) {
+          // the user is logged in
+          if (rest.currentUser.profile && rest.currentUser.profile.admin) {
+            return <Component {...props} />;
+          } else {
+            return (
+              <Redirect
+                to={{
+                  pathname: "/",
+                  state: { from: props.location }
+                }}
+              />
+            );
+          }
+        }
+      }}
     />
   );
 }
@@ -72,22 +66,39 @@ function PrivateRoute({ component: Component, ...rest }) {
   );
 }
 
-function ElevatedRoute({ component: Component, ...rest }) {
+function SimpleRoute({ component: Component, ...rest }) {
   return (
     <Route
       {...rest}
       render={props =>
-        Session.get("admin") ? (
-          <Component {...props} />
-        ) : (
+        !!Meteor.userId() ? (
           <Redirect
             to={{
-              pathname: "/",
+              pathname: "/blog",
               state: { from: props.location }
             }}
           />
+        ) : (
+          <Component {...props} />
         )
       }
     />
   );
 }
+
+export const routes = (
+  <BrowserRouter>
+    <NavAuthBar />
+    <Switch>
+      <SimpleRoute exact path="/" component={Home} />
+      <SimpleRoute exact path="/login" component={AuthLogin} />
+      <SimpleRoute exact path="/signup" component={AuthSignup} />
+      <PrivateRoute exact path="/blog" component={Blog} />
+      <PrivateRoute path="/blog/:_id" component={BlogPost} />
+      <ElevatedRouteTracking exact path="/admin/users" component={Users} />
+      <Route component={NotFoundPage} />
+    </Switch>
+
+    <Footer />
+  </BrowserRouter>
+);

@@ -2,9 +2,14 @@ import React from "react";
 import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+
 import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
 
 import grey from "@material-ui/core/colors/grey";
+
+import { withTracker } from "meteor/react-meteor-data";
 
 const styles = theme => ({
   themain: {
@@ -18,24 +23,14 @@ const styles = theme => ({
 
     backgroundColor: "#f6f6f6"
   },
-  imageOfPost: {
-    width: "100%",
-    height: "50vh",
-
-    borderRadius: 10,
-    boxShadow: "3px 3px 50px 1px #444",
-
-    backgroundColor: grey[400],
-    backgroundImage: `url(/paella.jpg)`,
-    backgroundPosition: "center",
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat"
+  textField: {
+    width: "40vw"
   }
 });
 
 class BlogPost extends React.Component {
   componentDidMount() {
-    document.title = "Title - PrivateBlog";
+    document.title = "Blog Post - PrivateBlog";
   }
 
   render() {
@@ -53,10 +48,6 @@ class BlogPost extends React.Component {
               >
                 Interesting Title
               </Typography>
-            </Grid>
-
-            <Grid item xs={6}>
-              <div className={classes.imageOfPost} />
             </Grid>
 
             <Grid item xs={12}>
@@ -116,8 +107,132 @@ class BlogPost extends React.Component {
   }
 }
 
+class BlogPostAdmin extends React.Component {
+  state = {
+    editing: false
+  };
+
+  componentDidMount() {
+    document.title = "Blog Post - Admin - PrivateBlog";
+  }
+
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
+  };
+  handleConfirm = () => {};
+  handleCancel = () => {};
+
+  render() {
+    const { classes, history } = this.props;
+
+    return (
+      <main className={classes.themain}>
+        <div className={classes.content}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "40px 24px"
+            }}
+          >
+            <Typography
+              variant="h5"
+              bold="true"
+              align="right"
+              style={{
+                margin: "0px 24px"
+              }}
+            >
+              <Button
+                onClick={this.handleConfirm.bind(this, history)}
+                style={{
+                  textDecoration: "none",
+                  color: "#060"
+                }}
+              >
+                CONFIRM
+              </Button>
+            </Typography>
+
+            <Typography
+              variant="h5"
+              bold="true"
+              align="right"
+              style={{
+                margin: "0px 24px"
+              }}
+            >
+              <Button
+                onClick={this.handleCancel.bind(this, history)}
+                style={{
+                  textDecoration: "none",
+                  color: "#600"
+                }}
+              >
+                CANCEL
+              </Button>
+            </Typography>
+          </div>
+
+          <Grid container spacing={24} justify="center">
+            <form noValidate autoComplete="off">
+              <Grid item xs={12}>
+                <Typography variant="h6">Title</Typography>
+                <TextField
+                  id="adminEditTitle"
+                  onChange={this.handleChange("title")}
+                  className={classes.textField}
+                  margin="normal"
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="h6">Description</Typography>
+                <TextField
+                  id="adminEditDescription"
+                  onChange={this.handleChange("description")}
+                  className={classes.textField}
+                  multiline
+                  margin="normal"
+                  variant="filled"
+                />
+              </Grid>
+            </form>
+          </Grid>
+        </div>
+      </main>
+    );
+  }
+}
+
 BlogPost.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(BlogPost);
+BlogPostAdmin.propTypes = {
+  classes: PropTypes.object.isRequired
+};
+
+class Wraper extends React.Component {
+  render() {
+    const { currentUser } = this.props;
+
+    const checkingIfAdmin =
+      currentUser && currentUser.profile && currentUser.profile.admin;
+
+    if (checkingIfAdmin) {
+      return <BlogPostAdmin {...this.props} />;
+    } else {
+      return <BlogPost {...this.props} />;
+    }
+  }
+}
+
+export default withStyles(styles)(
+  withTracker(props => {
+    return {
+      currentUser: Meteor.user()
+    };
+  })(Wraper)
+);

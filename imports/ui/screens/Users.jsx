@@ -6,18 +6,13 @@ import Grid from "@material-ui/core/Grid";
 
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Checkbox from "@material-ui/core/Checkbox";
 import PersonIcon from "@material-ui/icons/PersonPin";
 
 import grey from "@material-ui/core/colors/grey";
+
+import { withTracker } from "meteor/react-meteor-data";
 
 const styles = theme => ({
   themain: {
@@ -42,9 +37,10 @@ const styles = theme => ({
 class Users extends React.Component {
   componentDidMount() {
     document.title = "Users - Admin - PrivateBlog";
+    Meteor.subscribe("allUsers");
   }
 
-  generate(element) {
+  populateList(element) {
     return [0, 1, 2].map(value =>
       React.cloneElement(element, {
         key: value
@@ -53,7 +49,7 @@ class Users extends React.Component {
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, allUsers } = this.props;
 
     return (
       <main className={classes.themain}>
@@ -61,7 +57,7 @@ class Users extends React.Component {
           <Grid container spacing={16} style={{ justifyContent: "center" }}>
             <Grid item xs={12} md={6}>
               <Typography variant="h4" style={{ margin: "40px 24px" }}>
-                Website users
+                Users
               </Typography>
               <div className={classes.demo}>
                 <List>
@@ -69,19 +65,23 @@ class Users extends React.Component {
                     <ListItemIcon>
                       <div style={{ height: 30, width: 30 }} />
                     </ListItemIcon>
-                    <ListItemText primary="Id" />
                     <ListItemText primary="Username" />
+                    <ListItemText primary="Id" />
                   </ListItem>
 
-                  {this.generate(
-                    <ListItem>
-                      <ListItemIcon>
-                        <PersonIcon />
-                      </ListItemIcon>
-                      <ListItemText secondary="123456" />
-                      <ListItemText secondary="Testing" />
-                    </ListItem>
-                  )}
+                  {this.props.allUsers.map((item, index) => {
+                    const { username, _id } = item;
+
+                    return (
+                      <ListItem key={index}>
+                        <ListItemIcon>
+                          <PersonIcon />
+                        </ListItemIcon>
+                        <ListItemText secondary={username} />
+                        <ListItemText secondary={_id} />
+                      </ListItem>
+                    );
+                  })}
                 </List>
               </div>
             </Grid>
@@ -96,4 +96,10 @@ Users.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(Users);
+export default withStyles(styles)(
+  withTracker(props => {
+    return {
+      allUsers: Meteor.users.find().fetch()
+    };
+  })(Users)
+);

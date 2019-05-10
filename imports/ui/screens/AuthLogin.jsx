@@ -8,7 +8,6 @@ import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
 
 import { Meteor } from "meteor/meteor";
-import { Session } from "meteor/session";
 import { Link, Redirect } from "react-router-dom";
 
 const styles = theme => ({
@@ -77,9 +76,6 @@ class AuthLogin extends React.Component {
           error: "Unable to login. Please, check your username and password."
         });
       } else {
-        if (Meteor.user().profile)
-          Session.set("admin", Meteor.user().profile.admin);
-
         this.setState({ error: "", password: "", changePage: true });
       }
     });
