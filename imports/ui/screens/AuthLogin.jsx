@@ -7,7 +7,9 @@ import Button from "@material-ui/core/Button";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import { Link } from "react-router-dom";
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
+import { Link, Redirect } from "react-router-dom";
 
 const styles = theme => ({
   content: {
@@ -50,15 +52,44 @@ class AuthLogin extends React.Component {
   }
 
   state = {
-    name: "Composed TextField"
+    error: "",
+    changePage: false
   };
 
-  handleChange = event => {
-    this.setState({ name: event.target.value });
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
+  };
+
+  handleLogin = () => {
+    if (!this.state.user || !this.state.password) {
+      this.setState({
+        error: "Please, provide your username and password."
+      });
+      return;
+    }
+
+    let username = this.state.user.trim();
+    let password = this.state.password.trim();
+
+    Meteor.loginWithPassword({ username }, password, err => {
+      if (err) {
+        this.setState({
+          error: "Unable to login. Please, check your username and password."
+        });
+      } else {
+        if (Meteor.user().profile)
+          Session.set("admin", Meteor.user().profile.admin);
+        this.setState({ error: "", password: "", changePage: true });
+      }
+    });
   };
 
   render() {
     const { classes } = this.props;
+
+    if (this.state.changePage) {
+      return <Redirect push to="/blog" />;
+    }
 
     return (
       <main style={{ height: "78vh" }}>
@@ -67,9 +98,13 @@ class AuthLogin extends React.Component {
             <Typography component="h3" bold="true" variant="h5" color="inherit">
               Welcome Back!
             </Typography>
+            <Typography variant="caption" style={{ color: "#F00" }}>
+              {this.state.error}
+            </Typography>
             <form className={classes.formControl} noValidate autoComplete="off">
               <TextField
-                id="outlined-with-placeholder"
+                id="loginUsername"
+                onChange={this.handleChange("user")}
                 label="Username"
                 className={classes.textField}
                 margin="normal"
@@ -77,7 +112,8 @@ class AuthLogin extends React.Component {
               />
 
               <TextField
-                id="outlined-with-placeholder"
+                id="loginPassword"
+                onChange={this.handleChange("password")}
                 label="Password"
                 className={classes.textField}
                 margin="normal"
@@ -96,16 +132,16 @@ class AuthLogin extends React.Component {
                 </Link>
               </Typography>
             </form>
-            <Link to="/blog" className={classes.button}>
-              <Button
-                variant="contained"
-                color="primary"
-                bold="true"
-                size="medium"
-              >
-                LOG IN
-              </Button>
-            </Link>
+            <Button
+              variant="contained"
+              color="primary"
+              bold="true"
+              size="medium"
+              className={classes.button}
+              onClick={this.handleLogin}
+            >
+              LOG IN
+            </Button>
           </div>
         </div>
       </main>

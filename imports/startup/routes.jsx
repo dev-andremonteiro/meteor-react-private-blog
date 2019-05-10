@@ -1,5 +1,5 @@
-import React from "react";
-import { Router, Route, Switch, BrowserRouter } from "react-router-dom";
+import React, { Componet } from "react";
+import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
 
 import Home from "../ui/screens/Home";
 import AuthLogin from "../ui/screens/AuthLogin";
@@ -12,51 +12,82 @@ import NotFoundPage from "../ui/screens/NotFoundPage";
 import NavAuthBar from "../ui/components/NavAuthBar";
 import Footer from "../ui/components/Footer";
 
-export const renderRoutes = () => {
+import { Meteor } from "meteor/meteor";
+import { Session } from "meteor/session";
+
+export const routes = (
+  <BrowserRouter>
+    <NavAuthBar />
+    <Switch>
+      <SimpleRoute exact path="/" component={Home} />
+      <SimpleRoute exact path="/login" component={AuthLogin} />
+      <SimpleRoute exact path="/signup" component={AuthSignup} />
+      <PrivateRoute exact path="/blog" component={Blog} />
+      <PrivateRoute path="/blog/:_id" component={BlogPost} />
+      <ElevatedRoute exact path="/admin/users" component={Users} />
+      <Route component={NotFoundPage} />
+    </Switch>
+
+    <Footer />
+  </BrowserRouter>
+);
+
+function SimpleRoute({ component: Component, ...rest }) {
   return (
-    <BrowserRouter>
-      <NavAuthBar />
-      <Switch>
-        <Route exact path="/" component={Home} />
-        <Route exact path="/login" component={AuthLogin} />
-        <Route exact path="/signup" component={AuthSignup} />
-        <Route exact path="/blog" component={Blog} />
-        <Route path="/blog/:_id" component={BlogPost} />
-        <Route exact path="/admin/users" component={Users} />
-        <Route component={NotFoundPage} />
-      </Switch>
-
-      <Footer />
-    </BrowserRouter>
+    <Route
+      {...rest}
+      render={props =>
+        !!Meteor.userId() ? (
+          <Redirect
+            to={{
+              pathname: "/blog",
+              state: { from: props.location }
+            }}
+          />
+        ) : (
+          <Component {...props} />
+        )
+      }
+    />
   );
-};
+}
 
-/**
- * 
- * 
- * 
-const unauthenticatedPages = ["/", "/login", "/signup"];
-const authenticatedPages = ["/blog", "/admin/users"];
+function PrivateRoute({ component: Component, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        !!Meteor.userId() ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: { from: props.location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}
 
-const onEnterPublicPage = () => {
-  if (Meteor.userId()) {
-    browserHistory.replace("/blog");
-  }
-};
-const onEnterPrivatePage = () => {
-  if (!Meteor.userId()) {
-    browserHistory.replace("/");
-  }
-};
-export const onAuthChange = isAuthenticated => {
-  const pathname = browserHistory.getCurrentLocation().pathname;
-  const isUnauthenticatedPage = unauthenticatedPages.includes(pathname);
-  const isAuthenticatedPage = authenticatedPages.includes(pathname);
-
-  if (isUnauthenticatedPage && isAuthenticated) {
-    browserHistory.replace("/blog");
-  } else if (isAuthenticatedPage && !isAuthenticated) {
-    browserHistory.replace("/");
-  }
-};
- */
+function ElevatedRoute({ component: Component, ...rest }) {
+  return (
+    <Route
+      {...rest}
+      render={props =>
+        Session.get("admin") ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/",
+              state: { from: props.location }
+            }}
+          />
+        )
+      }
+    />
+  );
+}

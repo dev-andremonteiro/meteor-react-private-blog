@@ -7,7 +7,10 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
-import { Link } from "react-router-dom";
+import { Meteor } from "meteor/meteor";
+
+import { Link, Redirect } from "react-router-dom";
+import { Session } from "meteor/session";
 
 const styles = theme => ({
   appBar: {
@@ -23,8 +26,17 @@ const styles = theme => ({
 });
 
 class NavAuthBar extends React.Component {
+  state = {
+    changePage: false
+  };
+
   render() {
     const { classes } = this.props;
+
+    if (this.state.changePage) {
+      this.setState({ changePage: false });
+      return <Redirect push to="/" />;
+    }
 
     return (
       <AppBar position="static" className={classes.appBar}>
@@ -53,6 +65,19 @@ class NavAuthBar extends React.Component {
               Login
             </Button>
           </Link>
+
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => {
+              Session.set("admin", false);
+              Meteor.logout(() => {
+                this.setState({ changePage: true });
+              });
+            }}
+          >
+            Logout
+          </Button>
         </Toolbar>
       </AppBar>
     );

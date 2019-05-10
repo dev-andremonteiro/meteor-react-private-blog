@@ -1,5 +1,5 @@
 import React from "react";
-import { renderRoutes } from "../startup/routes";
+import { routes } from "../startup/routes";
 import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider";
 import muiTheme from "./muiTheme";
 
@@ -11,7 +11,7 @@ export default class App extends React.Component {
       <MuiThemeProvider theme={muiTheme}>
         <React.Fragment>
           <CssBaseline />
-          {renderRoutes()}
+          {routes}
         </React.Fragment>
       </MuiThemeProvider>
     );

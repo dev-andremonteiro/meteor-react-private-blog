@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
+import { Meteor } from "meteor/meteor";
 import { Redirect } from "react-router-dom";
 
 const styles = theme => ({
@@ -29,28 +30,12 @@ const shadow = {
 };
 
 class Home extends React.Component {
-  state = {
-    redirect: false
-  };
-
-  componentWillMount() {
-    let loggedIn = false;
-
-    if (loggedIn) {
-      this.setState({ redirect: true });
-    }
-  }
-
   componentDidMount() {
     document.title = "Home - PrivateBlog";
   }
 
   render() {
     const { classes } = this.props;
-
-    if (this.state.redirect) {
-      return <Redirect push to="/blog" />;
-    }
 
     return (
       <main style={{ height: "78vh" }}>

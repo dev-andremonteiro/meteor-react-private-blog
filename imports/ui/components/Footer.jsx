@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Link from "@material-ui/core/Link";
+import MUILink from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
 
@@ -28,13 +28,13 @@ class Footer extends React.Component {
           component="p"
         >
           Developed by{" "}
-          <Link
+          <MUILink
             target="_blank"
             rel="noopener noreferrer"
             href="http://github.com/dev-andremonteiro"
           >
             André Monteiro
-          </Link>
+          </MUILink>
         </Typography>
         <Typography
           variant="subtitle2"

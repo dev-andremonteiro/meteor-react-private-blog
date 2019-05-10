@@ -6,6 +6,7 @@ import Grid from "@material-ui/core/Grid";
 import PostCard from "../components/PostCard";
 
 import { Link } from "react-router-dom";
+import { Meteor } from "meteor/meteor";
 
 const styles = theme => ({
   themain: {

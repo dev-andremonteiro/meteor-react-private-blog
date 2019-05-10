@@ -7,7 +7,8 @@ import Button from "@material-ui/core/Button";
 
 import { withStyles } from "@material-ui/core/styles";
 
-import { Link } from "react-router-dom";
+import { Accounts } from "meteor/accounts-base";
+import { Redirect } from "react-router-dom";
 
 const styles = theme => ({
   content: {
@@ -49,15 +50,56 @@ class AuthSignup extends React.Component {
   }
 
   state = {
-    name: "Composed TextField"
+    error: "",
+    changePage: false
   };
 
-  handleChange = event => {
-    this.setState({ name: event.target.value });
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
+  };
+
+  handleSignup = () => {
+    if (!this.state.user || !this.state.password || !this.state.repeat) {
+      this.setState({
+        error: "Please, fill all the fields to create an account."
+      });
+      return;
+    }
+
+    let username = this.state.user.trim();
+    let password = this.state.password.trim();
+    let repeat = this.state.repeat.trim();
+
+    if (password.length < 6) {
+      return this.setState({
+        error: "Password must be at least 6 characters long."
+      });
+    }
+
+    if (password !== repeat) {
+      return this.setState({ error: "Password and Repeat are not equal." });
+    }
+
+    Accounts.createUser({ username, password }, err => {
+      if (err) {
+        this.setState({ error: err.reason });
+      } else {
+        this.setState({
+          error: "",
+          changePage: true,
+          password: "",
+          repeat: ""
+        });
+      }
+    });
   };
 
   render() {
     const { classes } = this.props;
+
+    if (this.state.changePage) {
+      return <Redirect push to="/blog" />;
+    }
 
     return (
       <main style={{ height: "78vh" }}>
@@ -66,9 +108,13 @@ class AuthSignup extends React.Component {
             <Typography component="h3" bold="true" variant="h5" color="inherit">
               Create your new account
             </Typography>
+            <Typography variant="caption" style={{ color: "#F00" }}>
+              {this.state.error}
+            </Typography>
             <form className={classes.formControl} noValidate autoComplete="off">
               <TextField
-                id="outlined-with-placeholder"
+                id="signupLogin"
+                onChange={this.handleChange("user")}
                 label="Username"
                 className={classes.textField}
                 margin="normal"
@@ -76,7 +122,8 @@ class AuthSignup extends React.Component {
               />
 
               <TextField
-                id="outlined-with-placeholder"
+                id="signupPassword"
+                onChange={this.handleChange("password")}
                 label="Password"
                 className={classes.textField}
                 margin="normal"
@@ -85,7 +132,8 @@ class AuthSignup extends React.Component {
               />
 
               <TextField
-                id="outlined-with-placeholder"
+                id="signupRepeat"
+                onChange={this.handleChange("repeat")}
                 label="Repeat Password"
                 className={classes.textField}
                 margin="normal"
@@ -94,16 +142,16 @@ class AuthSignup extends React.Component {
               />
             </form>
 
-            <Link to="/blog" className={classes.button}>
-              <Button
-                variant="outlined"
-                color="primary"
-                bold="true"
-                size="medium"
-              >
-                SIGN UP
-              </Button>
-            </Link>
+            <Button
+              variant="outlined"
+              color="primary"
+              bold="true"
+              size="medium"
+              className={classes.button}
+              onClick={this.handleSignup}
+            >
+              SIGN UP
+            </Button>
           </div>
         </div>
       </main>
