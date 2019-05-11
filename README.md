@@ -1,5 +1,5 @@
 <p align="center" >
-    <img src="https://user-images.githubusercontent.com/19479358/55590145-1080be00-5700-1.png" width="700"/>
+    <img src="https://user-images.githubusercontent.com/19479358/57564790-32650480-7380-11e9-8a0b-fd9833492a97.PNG" width="700"/>
 </p>
 <p align="center">
 <a title='License' href="https://github.com/FaridSafi/react-native-gifted-chat/blob/master/LICENSE" height="18">
