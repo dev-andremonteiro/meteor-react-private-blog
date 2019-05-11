@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
+import Switch from "@material-ui/core/Switch";
 
 import { withStyles } from "@material-ui/core/styles";
 
@@ -50,12 +51,17 @@ class AuthSignup extends React.Component {
   }
 
   state = {
+    checkedAdmin: false,
     error: "",
     changePage: false
   };
 
   handleChange = name => event => {
     this.setState({ [name]: event.target.value });
+  };
+
+  handleCheck = name => event => {
+    this.setState({ [name]: event.target.checked });
   };
 
   handleSignup = () => {
@@ -80,18 +86,21 @@ class AuthSignup extends React.Component {
       return this.setState({ error: "Password and Repeat are not equal." });
     }
 
-    Accounts.createUser({ username, password }, err => {
-      if (err) {
-        this.setState({ error: err.reason });
-      } else {
-        this.setState({
-          error: "",
-          changePage: true,
-          password: "",
-          repeat: ""
-        });
+    Accounts.createUser(
+      { username, password, profile: { admin: this.state.checkedAdmin } },
+      err => {
+        if (err) {
+          this.setState({ error: err.reason });
+        } else {
+          this.setState({
+            error: "",
+            changePage: true,
+            password: "",
+            repeat: ""
+          });
+        }
       }
-    });
+    );
   };
 
   render() {
@@ -140,6 +149,13 @@ class AuthSignup extends React.Component {
                 variant="outlined"
                 type="password"
                 onKeyPress={ev => ev.key === "Enter" && this.handleSignup()}
+              />
+
+              <p>Admin User?</p>
+              <Switch
+                checked={this.state.checkedAdmin}
+                onChange={this.handleCheck("checkedAdmin")}
+                value="checkedAdmin"
               />
             </form>
 

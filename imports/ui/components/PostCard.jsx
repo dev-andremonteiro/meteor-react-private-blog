@@ -34,14 +34,27 @@ const styles = theme => ({
 });
 
 class PostCard extends React.Component {
-  handleEditPost = history => {
-    history.push("/blog/asd123");
+  handleEditPost = () => {
+    this.props.history.push(`/blog/${this.props.postId}`, {
+      editing: true
+    });
   };
 
-  handleDeletePost = history => {};
+  handleCardClick = () => {
+    this.props.history.push(`/blog/${this.props.postId}`);
+  };
+
+  handleDeletePost = () => {
+    Meteor.call("posts.remove", this.props.postId, function(err, res) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+    });
+  };
 
   render() {
-    const { classes, history, currentUser } = this.props;
+    const { classes, currentUser, title, description, username } = this.props;
 
     const checkingIfAdmin =
       currentUser && currentUser.profile && currentUser.profile.admin;
@@ -52,13 +65,13 @@ class PostCard extends React.Component {
           <CardActions>
             <IconButton
               aria-label="Edit Post"
-              onClick={this.handleEditPost.bind(this, history)}
+              onClick={this.handleEditPost.bind(this)}
             >
               <EditIcon />
             </IconButton>
             <IconButton
               aria-label="Delete Post"
-              onClick={this.handleDeletePost.bind(this, history)}
+              onClick={this.handleDeletePost.bind(this)}
             >
               <DeleteIcon />
             </IconButton>
@@ -67,19 +80,14 @@ class PostCard extends React.Component {
 
         <CardHeader
           avatar={<Avatar aria-label="Recipe" className={classes.avatar} />}
-          title="Shrimp and Chorizo Paella"
-          subheader="September 14, 2016"
+          title={username}
         />
-        <CardActionArea onClick={() => history.push("/blog/asd123")}>
+        <CardActionArea onClick={this.handleCardClick.bind(this)}>
           <CardContent>
-            <Typography variant="h5" style={{ marginBottom: 20 }}>
-              Interesting Title
+            <Typography variant="h5" style={{ marginBottom: 24 }}>
+              {title}
             </Typography>
-            <Typography>
-              This impressive paella is a perfect party dish and a fun meal to
-              cook together with your guests. Add 1 cup of frozen peas along
-              with the mussels, if you like.
-            </Typography>
+            <Typography>{description.slice(0, 300)}</Typography>
           </CardContent>
         </CardActionArea>
       </Card>

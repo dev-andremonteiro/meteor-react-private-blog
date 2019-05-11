@@ -11,6 +11,12 @@ import { Link, withRouter } from "react-router-dom";
 import { Meteor } from "meteor/meteor";
 import { withTracker } from "meteor/react-meteor-data";
 
+import { Posts } from "../../api/posts";
+
+const defaultTitle = "Interesting Title";
+const defaultDescription =
+  "This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.";
+
 const styles = theme => ({
   themain: {
     backgroundColor: theme.palette.grey[400]
@@ -30,12 +36,21 @@ class Blog extends React.Component {
     document.title = "Blog Posts - PrivateBlog";
   }
 
-  handleNewPost = history => {
-    history.push("/blog/asd123");
+  handleNewPost = () => {
+    const { history } = this.props;
+
+    Meteor.call("posts.insert", function(error, result) {
+      if (error) {
+        console.log(error);
+        return;
+      }
+      var theNewId = result;
+      history.push(`/blog/${theNewId}`, { newPost: true });
+    });
   };
 
   render() {
-    const { classes, currentUser, history } = this.props;
+    const { classes, currentUser } = this.props;
 
     const checkingIfAdmin =
       currentUser && currentUser.profile && currentUser.profile.admin;
@@ -66,7 +81,7 @@ class Blog extends React.Component {
                   }}
                 >
                   <Button
-                    onClick={this.handleNewPost.bind(this, history)}
+                    onClick={this.handleNewPost.bind(this)}
                     style={{
                       textDecoration: "none",
                       color: "#060"
@@ -91,13 +106,20 @@ class Blog extends React.Component {
           </div>
 
           <Grid container spacing={16}>
-            {[1, 2, 3, 4, 5, 6].map(value => (
-              <Grid key={value} item lg={4} md={6} sm={12} xs={12}>
-                <Grid container style={{ justifyContent: "center" }}>
-                  <PostCard />
+            {this.props.posts.map((value, index) => {
+              return (
+                <Grid key={index} item lg={4} md={6} sm={12} xs={12}>
+                  <Grid container style={{ justifyContent: "center" }}>
+                    <PostCard
+                      postId={value._id}
+                      title={value.title}
+                      description={value.description}
+                      username={value.username}
+                    />
+                  </Grid>
                 </Grid>
-              </Grid>
-            ))}
+              );
+            })}
           </Grid>
         </div>
       </main>
@@ -112,7 +134,8 @@ Blog.propTypes = {
 export default withStyles(styles)(
   withTracker(props => {
     return {
-      currentUser: Meteor.user()
+      currentUser: Meteor.user(),
+      posts: Posts.find({}, { sort: { createdAt: -1 } }).fetch()
     };
   })(withRouter(Blog))
 );

@@ -23,11 +23,11 @@ This is a small blog page application. This app is a private blog page which mea
 - [x] Finish all screens designs.
 - [x] User should be able to register and login to the app trought the respective routes _/signup_ and _/login_.
 - [x] Users not logged in CAN NOT see blog posts.
-- [ ] All Blog posts are shown in the _/blog_ route.
-- [ ] Blog posts should have a Title and a Description field.
-- [ ] ADMIN user should be able to create, update and delete blog posts using the _/blog_ route.
-- [ ] Guest users should not see ADMIN action buttons.
-- [ ] A single page with the _/blog/{id}_ should be opened after clicking on a blog post in _/blog_.
+- [x] All Blog posts are shown in the _/blog_ route.
+- [x] Blog posts should have a Title and a Description field.
+- [x] ADMIN user should be able to create, update and delete blog posts using the _/blog_ route.
+- [x] Guest users should not see ADMIN action buttons.
+- [x] A single page with the _/blog/{id}_ should be opened after clicking on a blog post in _/blog_.
 - [x] ADMIN user should be able to see current users from the _/admin/users_ route.
 - [x] Guest users should not be able to see _/admin/users_ route content.
 
